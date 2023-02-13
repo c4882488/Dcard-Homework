@@ -1,13 +1,12 @@
-import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import { apiGraphql } from "../api";
+import TaskList from "../components/TaskList";
+import { useState } from "react";
 
 function Backhome() {
-//   const navigate = useNavigate();
+  const [taskData, setTaskData] = useState([]);
   const onClick = () => {
-    // alert("Click");
-    //   return redirect("/callback");
-    //   navigate("/");
+    console.log();
     apiGraphql({
       query: `
         {
@@ -32,18 +31,24 @@ function Backhome() {
         `,
     })
       .then((response) => {
-        console.log(response.data.data);
-        // let data = qs.parse(response.data);
+        setTaskData(response.data.data.viewer.issues);
       })
       .catch((error) => {
         // TODO: set error message
         console.log(error);
       });
   };
+
+  const onClickClearn = (event) => {
+    setTaskData([]);
+  }
+
   return (
     <div>
       <h1>Backhome</h1>
       <Button onClick={onClick}>click</Button>
+      <Button onClick={onClickClearn}>click Clearn</Button>
+      {taskData.length !== 0 ? <TaskList taskData={taskData} /> : null}
     </div>
   );
 }
