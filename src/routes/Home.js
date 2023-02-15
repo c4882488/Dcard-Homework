@@ -6,7 +6,7 @@ function Home() {
   let authorizedWebsite =
     "https://github.com/login/oauth/authorize?client_id=" +
     process.env.REACT_APP_CLIENT_ID +
-    ";";
+    ";scope=repo,project,admin:org,write:discussion,read:discussion";
   return (
     // TODO: token錯誤的處理
     <div>

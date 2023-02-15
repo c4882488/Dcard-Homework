@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 
 function Callback() {
     const navigate = useNavigate();
-
     const [authCode] = useState(
       qs.parse(useLocation().search, { ignoreQueryPrefix: true }).code
     );
@@ -18,7 +17,8 @@ function Callback() {
       })
         .then((response) => {
           let data = qs.parse(response.data);
-          localStorage.setItem("authToken", "token "+data.access_token);
+          // console.log(data);
+          localStorage.setItem("authToken", "bearer "+data.access_token);
           navigate("/");
         })
         .catch((error) => {
