@@ -1,15 +1,25 @@
-import TaskItem from './TaskItem';
+import TaskListItem from "./TaskListItem";
 
 function TaskList(props) {
-  const { nodes, pageInfo, totalCount } = props.taskData;
-  console.log(nodes, pageInfo, totalCount);
+  const {
+    taskData: { nodes, pageInfo, totalCount },
+    taskStatusData,
+    handleDeleteTask,
+    handleEditTask,
+  } = props;
   return (
     <div>
       {nodes.map((node) => (
-        <TaskItem key={node.id} node={node} />
+        <TaskListItem
+          key={node.id}
+          node={node}
+          taskStatusData={taskStatusData}
+          handleDeleteTask={handleDeleteTask}
+          handleEditTask={handleEditTask}
+        />
       ))}
       {/* TODO:這裡會有選單列表 */}
-      <div>{totalCount}</div>
+      {/* <div>{totalCount}</div> */}
     </div>
   );
 }

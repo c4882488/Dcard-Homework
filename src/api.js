@@ -14,7 +14,7 @@ const userRequest = axios.create({
 
 // github API
 const githubRequest = axios.create({
-  baseURL: cors+"https://api.github.com",
+  baseURL: cors+"https://api.github.com/",
 });
 
 export const apiUserLogin = (data) =>
@@ -26,6 +26,7 @@ export const apiGraphql = (data) => githubRequest.post("graphql", data, { header
 export const apiGetIssues = () => githubRequest.get("issues", { headers });
 export const apiGetIssuesByRepo = (owner, repo, data) =>
   githubRequest.get(`/repos/${owner}/${repo}/issues`, data, { headers });
+// TODO: 不一定會用到
 export const apiGetIssuesByRepoAndNumber = (owner, repo, number) =>
   githubRequest.get(`/repos/${owner}/${repo}/issues/${number}`, { headers });
 
@@ -38,5 +39,9 @@ export const apiUpdateIssue = (owner, repo, number, data) =>
   });
 
 export const apiDeleteIssue = (owner, repo, number) =>
-  githubRequest.delete(`/repos/${owner}/${repo}/issues/${number}`, { headers });
+  githubRequest.patch(
+    `/repos/${owner}/${repo}/issues/${number}`,
+    { state: "closed" },
+    { headers }
+  );
 

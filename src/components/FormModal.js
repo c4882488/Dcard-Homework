@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
-import Typography from '@mui/material/Typography';
 import TaskForm from './TaskForm'
 
 const style = {
@@ -18,7 +17,8 @@ const style = {
 };
 
 function FormModal(props) {
-    const { open, handleClose } = props;
+    const { open, handleClose, handleAddTask, editData, handleUpdateTask } =
+      props;
 
     return (
       <Modal
@@ -30,10 +30,12 @@ function FormModal(props) {
       >
         <Fade in={open}>
           <Box sx={style}>
-            <Typography id="modal-title" variant="h5" component="h2">
-              Add Task
-            </Typography>
-            <TaskForm handleClose={handleClose} />
+            <TaskForm
+              handleClose={handleClose}
+              handleAddTask={handleAddTask}
+              editData={editData}
+              handleUpdateTask={handleUpdateTask}
+            />
           </Box>
         </Fade>
       </Modal>
