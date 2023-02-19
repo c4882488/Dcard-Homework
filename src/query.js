@@ -42,7 +42,7 @@ export const getIssues = {
 
 export const createIssues = `
     mutation($input: CreateIssueInput!) {
-        createIssue(title: $title, body: $body, repositoryId: $repositoryId, projectIds: $projectIds) {
+        createIssue(input: $input) {
             issue {
                 id
                 title
@@ -53,8 +53,8 @@ export const createIssues = `
 `;
 
 export const updateIssues = `
-    mutation($issueID: ID!, $title: String!, $body: String!, $projectID: [ID!]) {
-        updateIssue(input: {id: $issueID, body: $body, title: $title, projectIds: $projectID}) {
+    mutation($issueId: ID!, $title: String!, $body: String!, $projectIds: [ID!]) {
+        updateIssue(input: {id: $issueId, body: $body, title: $title, projectIds: $projectIds}) {
             issue {
                 id
                 title
@@ -96,3 +96,23 @@ export const getProjectColumn = {
     }
   `,
 };
+
+export const updateProjectStatus = `
+    mutation($input: MoveProjectCardInput!) {
+        moveProjectCard(input: $input) {
+            cardEdge {
+            node {
+                id
+                state
+                project {
+                id
+                name
+                }
+                column {
+                name
+                }
+            }
+            }
+        }
+    }
+`;

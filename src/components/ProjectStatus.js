@@ -5,7 +5,8 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ProjectStatusItem from './ProjectStatusItem';
 
 function ProjectStatus(props) {
-    const { taskStatusData,name } = props;
+    const { taskStatusData, name, projectCardId, handleUpdateProjectStatus } =
+      props;
     // console.log(taskStatusData);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -15,6 +16,10 @@ function ProjectStatus(props) {
     const handleClose = () => {
         setAnchorEl(null);
     };
+    const handleUpdateStatus = (e) => {
+        handleUpdateProjectStatus(projectCardId, e.target.id);
+        setAnchorEl(null);
+    }
 
     return (
       <div>
@@ -28,20 +33,20 @@ function ProjectStatus(props) {
           {name}
         </Button>
         <Menu
-          id="demo-customized-menu"
+          id="ProjectStatusMenu"
           anchorEl={anchorEl}
           open={open}
           onClose={handleClose}
-          MenuListProps={{
-            "aria-labelledby": "demo-customized-button",
-          }}
+          // MenuListProps={{
+          //   "aria-labelledby": "demo-customized-button",
+          // }}
         >
           {taskStatusData.map((item) => {
             return (
               <ProjectStatusItem
                 key={item.id}
                 item={item}
-                handleClose={handleClose}
+                handleUpdateStatus={handleUpdateStatus}
               />
             );
           })}

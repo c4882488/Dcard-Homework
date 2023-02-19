@@ -6,6 +6,7 @@ function TaskList(props) {
     taskStatusData,
     handleDeleteTask,
     handleEditTask,
+    handleUpdateProjectStatus,
   } = props;
   return (
     <div>
@@ -16,6 +17,7 @@ function TaskList(props) {
           taskStatusData={taskStatusData}
           handleDeleteTask={handleDeleteTask}
           handleEditTask={handleEditTask}
+          handleUpdateProjectStatus={handleUpdateProjectStatus}
         />
       ))}
       {/* TODO:這裡會有選單列表 */}

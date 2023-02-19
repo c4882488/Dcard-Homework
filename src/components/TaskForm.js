@@ -10,7 +10,7 @@ function TaskForm(props) {
     title: editData.title || "",
     bodyText: editData.bodyText || "",
     id: editData.id || "",
-    projectID: editData.projectID || "",
+    projectId: editData.projectId || "",
   });
 
   // 輸入框改變時，更新 state

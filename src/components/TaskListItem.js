@@ -9,12 +9,20 @@ function TaskList(props) {
       taskStatusData,
       handleDeleteTask,
       handleEditTask,
+      handleUpdateProjectStatus,
     } = props;
     const { name } = projectCards.nodes[0].column;
-    const { id:projectID } = projectCards.nodes[0].project;
+    const { id:projectId } = projectCards.nodes[0].project;
+    const { id:projectCardId } = projectCards.nodes[0];
+
     return (
       <div>
-        <ProjectStatus taskStatusData={taskStatusData} name={ name } />
+        <ProjectStatus
+          taskStatusData={taskStatusData}
+          name={name}
+          projectCardId={projectCardId}
+          handleUpdateProjectStatus={handleUpdateProjectStatus}
+        />
         <div>{title}</div>
         <div>{bodyText}</div>
         {/* <div>{id}</div> */}
@@ -28,7 +36,7 @@ function TaskList(props) {
         </Button>
         <Button
           variant="contained"
-          onClick={() => handleEditTask({ id, title, bodyText, projectID })}
+          onClick={() => handleEditTask({ id, title, bodyText, projectId })}
           endIcon={<EditIcon />}
         >
           Edit
