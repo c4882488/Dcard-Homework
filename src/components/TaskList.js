@@ -20,8 +20,6 @@ function TaskList(props) {
           handleUpdateProjectStatus={handleUpdateProjectStatus}
         />
       ))}
-      {/* TODO:這裡會有選單列表 */}
-      {/* <div>{totalCount}</div> */}
     </div>
   );
 }

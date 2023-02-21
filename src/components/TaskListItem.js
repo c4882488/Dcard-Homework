@@ -25,8 +25,7 @@ function TaskList(props) {
         />
         <div>{title}</div>
         <div>{bodyText}</div>
-        {/* <div>{id}</div> */}
-        {/* TODO: 修改刪除按鈕 */}
+        {/* 修改刪除按鈕 */}
         <Button
           variant="contained"
           onClick={() => handleDeleteTask(id)}

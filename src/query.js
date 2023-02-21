@@ -1,4 +1,4 @@
-
+// TODO:可以改成用apollo-server、graphql來寫
 export const getIssues = {
   query: `
     {
@@ -39,6 +39,44 @@ export const getIssues = {
 }
 `,
 };
+// after: "Y3Vyc29yOjEw"
+export const queryIssues = `
+    query ($query: String!, $after: String) {
+    search(type: ISSUE, first: 10, query: $query, after: $after) {
+        nodes {
+        ... on Issue {
+            bodyText
+            id
+            url
+            title
+            number
+            repository {
+            id
+            }
+            projectCards(last: 1) {
+            nodes {
+                id
+                state
+                project {
+                id
+                name
+                }
+                column {
+                name
+                }
+            }
+            }
+        }
+        }
+        pageInfo {
+        endCursor
+        startCursor
+        hasNextPage
+        }
+        issueCount
+    }
+    }
+`;
 
 export const createIssues = `
     mutation($input: CreateIssueInput!) {

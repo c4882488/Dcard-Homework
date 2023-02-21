@@ -4,7 +4,14 @@ import { apiGraphql } from "../api";
 import TaskList from "../components/TaskList";
 import { useState } from "react";
 import FormModal from "../components/FormModal";
-import { getIssues, createIssues, deleteIssues, updateIssues, getProjectColumn, updateProjectStatus } from "../query";
+import {
+  createIssues,
+  deleteIssues,
+  updateIssues,
+  getProjectColumn,
+  updateProjectStatus,
+  queryIssues,
+} from "../query";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Box from "@mui/material/Box";
@@ -14,25 +21,55 @@ function Backhome() {
   const [taskData, setTaskData] = useState([]);
   const [taskStatusData, setStatusTaskData] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const [switchPage, setSwitchPage] = useState(0);
   // 搜尋用
   const [status, setStatus] = useState(null);
-  const [clocked, setClocked] = useState("ASC");
+  const [clocked, setClocked] = useState("DESC");
+  const [keyword, setKeyword] = useState("");
   // TODO: 可以改成redux
   const [editData, setEditData] = useState({});
 
   // TODO: 這裡要做的是把資料拿出來 但要改寫法
-  const onClick = () => {
-    apiGraphql(getIssues)
+  const getIssues = (endCursor) => {
+    let variables;
+    if (endCursor !== undefined) {
+      variables = {
+        query: `repo:c4882488/Vemorize-web ${keyword} sort:created-${clocked} type:issue is:open`,
+        after: endCursor,
+      };
+    } else {
+      variables = {
+        query: `repo:c4882488/Vemorize-web ${keyword} sort:created-${clocked} type:issue is:open`,
+      };
+    }
+    apiGraphql({
+      query: queryIssues,
+      variables,
+    })
       .then((response) => {
-        setTaskData(response.data.data.viewer.issues);
+        // console.log(response.data.data.search.pageInfo);
+        if (endCursor !== undefined) {
+          setTaskData((per) => {
+            return {
+              ...per,
+              nodes: [...per.nodes, ...response.data.data.search.nodes],
+              pageInfo: response.data.data.search.pageInfo,
+            };
+          });
+        } else {
+          console.log("重來的");
+          setTaskData(response.data.data.search);
+        }
       })
       .catch((error) => {
         // TODO: set error message
         console.log(error);
       });
+  };
+
+  const getProjectStatus = () => {
     apiGraphql(getProjectColumn)
       .then((response) => {
-        // console.log(response.data.data.viewer.projects.nodes[0].columns.nodes);
         setStatusTaskData(
           response.data.data.viewer.projects.nodes[0].columns.nodes
         );
@@ -41,7 +78,7 @@ function Backhome() {
         // TODO: set error message
         console.log(error);
       });
-  };
+  }
 
   // 控制modal開關
   const handleOpenModal = () => setOpenModal(true);
@@ -141,34 +178,58 @@ function Backhome() {
     }
   }
   const handleSortClocked = () => {
-    setClocked(clocked === "ASC" ? "DESC" : "ASC");
+    setClocked(clocked === "DESC" ? "ASC" : "DESC");
   }
-  
-  useEffect(() => {
-    const handleScroll = (event) => {
-      // setScrollTop(window.scrollY);
-      let button =
-        document.scrollingElement.offsetHeight -
-        document.scrollingElement.clientHeight - 50;
-      if (window.scrollY > button) {
-        console.log("到底了");
-      }
-    };
+  const handlekeyword = (e) => {
+    setKeyword(e.target.value);
+  }
+  const handleScroll = () => {
+    let button =
+      document.scrollingElement.offsetHeight -
+      document.scrollingElement.clientHeight -
+      100;
+    if (window.scrollY >= button) {
+      setSwitchPage(button);
+      // setPage((per) => per + 1);
+    }
+  };
 
+  // 滑動到底部
+  useEffect(() => {
+    getIssues();
+    getProjectStatus();
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   },[])
 
+  useEffect(()=>{
+    // setPage(1);
+    setSwitchPage(0);
+    getIssues();
+  }, [keyword, clocked]);
+
+  useEffect(() => {
+    // 判斷是否到底部與是否有下一頁
+    if (switchPage < window.scrollY &&  taskData.pageInfo.hasNextPage) {
+      getIssues(taskData.pageInfo.endCursor);
+    }
+  }, [switchPage]);
+
   return (
     <div>
       <h1>Task bar</h1>
-      <Button onClick={onClick}>click</Button>
-      <Button onClick={handleOpenModal}>click Modal</Button>
-      {/* TODO: 排序、搜尋 */}
+      <Button onClick={handleOpenModal}>Add Task</Button>
+      {/* TODO: 搜尋 */}
       <Box>
-        <TextField id="standard-basic" label="find Issues" variant="standard" />
+        <TextField
+          id="find-issues"
+          label="find Issues"
+          value={keyword}
+          onChange={(event) => handlekeyword(event)}
+          variant="standard"
+        />
       </Box>
       <Box>
         <ButtonGroup
@@ -178,7 +239,9 @@ function Backhome() {
         >
           {taskStatusData.map((item) => (
             <Button
-              sx={status === item.id ? styles.StatusButton : "primary"}
+              sx={
+                status === item.id ? styles.StatusButton : styles.unStatusButton
+              }
               key={item.id}
               onClick={() => handleChangeStatus(item.id)}
             >
@@ -194,7 +257,7 @@ function Backhome() {
         onClick={() => handleSortClocked()}
       >
         <ScheduleIcon />
-        {clocked == "DESC" ? "▲" : "▼"}
+        {clocked === "DESC" ? "▲" : "▼"}
       </Button>
 
       {/* 新增Task表單 */}
@@ -223,6 +286,9 @@ function Backhome() {
 const styles = {
   StatusButton: {
     backgroundColor: "#878787",
+  },
+  unStatusButton: {
+    backgroundColor: "##fff",
   },
 };
 

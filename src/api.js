@@ -5,7 +5,8 @@ const headers = {
   Authorization: localStorage.getItem("authToken"),
 };
 
-const cors = "https://cors-anywhere.herokuapp.com/";
+// const cors = "https://cors-anywhere.herokuapp.com/";
+const cors = "http://localhost:8080/";
 
 // User API
 const userRequest = axios.create({
@@ -22,5 +23,6 @@ export const apiUserLogin = (data) =>
   userRequest.post("oauth/access_token", data);
 
 // GraphQL Api
-export const apiGraphql = (data) => githubRequest.post("graphql", data, { headers });
+export const apiGraphql = async (data) =>
+  await githubRequest.post("graphql", data, { headers });
 
