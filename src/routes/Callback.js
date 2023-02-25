@@ -18,7 +18,6 @@ function Callback() {
     })
       .then((response) => {
         let data = qs.parse(response.data);
-        // console.log(data);
         localStorage.setItem("authToken", "bearer " + data.access_token);
         navigate("/");
       })
@@ -31,7 +30,7 @@ function Callback() {
 
   return (
     <div>
-      <h1>Callback</h1>
+      <h1>login...</h1>
     </div>
   );
 }

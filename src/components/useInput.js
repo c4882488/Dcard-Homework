@@ -11,21 +11,21 @@ function useInput(initaValue, initaType, isRequired = false) {
         setValue(inputValue);
         if (isRequired && initaType === "bodyText") {
             if (inputValue.length < 30) {
-              setError(true);
+                setError(true);
             } else {
-              setError(false);
+                setError(false);
             }
         }
 
         if (isRequired && initaType === "title") {
             if (
-              inputValue === "" ||
-              inputValue === null ||
-              inputValue === undefined
+                inputValue === "" ||
+                inputValue === null ||
+                inputValue === undefined
             ) {
-              setError(true);
+                setError(true);
             } else {
-              setError(false);
+                setError(false);
             }
         }
     }

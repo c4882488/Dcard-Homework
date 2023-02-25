@@ -1,18 +1,14 @@
 import React,{ useEffect, useState } from 'react'
-import Button from '@mui/material/Button'
 import { useSnackbar } from "notistack";
 import TaskPage from "./TaskPage";
 import { apiGraphql } from "../api";
 import { getUserName } from "../query";
+import HomeAppBar from "../components/HomeAppBar";
+import { Box } from '@mui/system';
 
 function Home() {
   const [ login, setLogin ] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
-  // Oauth2.0 url
-  let authorizedWebsite =
-    "https://github.com/login/oauth/authorize?client_id=" +
-    process.env.REACT_APP_CLIENT_ID +
-    ";read:user,scope=repo,project,write:discussion,read:discussion";
   
   // 查詢登入狀態 
   const handleLogin = () => {
@@ -34,22 +30,23 @@ function Home() {
   const handleSnackbar = (messenger, variant) => {
     enqueueSnackbar(messenger, { variant });
   };
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
+    setLogin(false);
+  }
 
   useEffect(() => {
     if (localStorage.getItem("authToken") !== null ) {
       handleLogin();
     }
   }, []);
+
   return (
-    <div>
-      {!login ? (
-        <Button variant="contained" href={authorizedWebsite}>
-          Login with Github
-        </Button>
-      ) : (
-        <TaskPage handleSnackbar={handleSnackbar} />
-      )}
-    </div>
+    <Box>
+      <HomeAppBar login={login} handleLogout={handleLogout} />
+      {login && <TaskPage handleSnackbar={handleSnackbar} />}
+    </Box>
   );
 }
 

@@ -13,11 +13,14 @@ import {
   queryIssues,
 } from "../query";
 import ScheduleIcon from "@mui/icons-material/Schedule";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import Box from "@mui/material/Box";
+import Fab from "@mui/material/Fab";
+import { Box, Container } from "@mui/system";
 import TextField from "@mui/material/TextField";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import AddTaskIcon from "@mui/icons-material/AddTask";
+import SearchIcon from "@mui/icons-material/Search";
+import InputAdornment from "@mui/material/InputAdornment";
 
 function TaskPage(props) {
   const { handleSnackbar } = props;
@@ -30,7 +33,7 @@ function TaskPage(props) {
   const [status, setStatus] = useState(null);
   const [sord, setSord] = useState("DESC");
   const [keyword, setKeyword] = useState("");
-  // TODO: 可以改成redux
+  // TODO: 編輯用
   const [editData, setEditData] = useState({});
 
   const getIssues = async (endCursor) => {
@@ -241,7 +244,6 @@ function TaskPage(props) {
     if(snackbarData !== undefined){
       handleSnackbar(snackbarData.message, snackbarData.type);
     }
-    // await getIssues();
   };
 
   // 滑動到底部
@@ -265,7 +267,7 @@ function TaskPage(props) {
         if (Object.keys(taskData).length !== 0) {
           getIssues();
         }
-      }, 600);
+      }, 700);
     
     return () => {
       clearTimeout(timerId);
@@ -290,45 +292,40 @@ function TaskPage(props) {
   }, [taskData]);
 
   return (
-    <div>
-      <h1>Task Manage</h1>
-      <Button onClick={handleOpenModal}>Add Task</Button>
-      <Box>
-        <TextField
-          id="find-issues"
-          label="find Issues"
-          value={keyword}
-          onChange={(event) => handlekeyword(event)}
-          variant="standard"
-        />
+    <Container maxWidth="sm" sx={{ mt: 2 }}>
+      <Box sx={{ width: "100%", display: "grid" }}>
+        <Box sx={{ gridRow: "1", gridColumn: "2/1" }}>
+          <Fab variant="extended" onClick={handleOpenModal}>
+            <AddTaskIcon />
+            Add Task
+          </Fab>
+        </Box>
+        <Box sx={{ gridRow: "1" }}>
+          <TextField
+            id="find-issues"
+            label="find Issues"
+            value={keyword}
+            onChange={(event) => handlekeyword(event)}
+            variant="standard"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+            fullWidth
+            margin="dense"
+          />
+        </Box>
       </Box>
-      <Box>
-        {/* <ButtonGroup
-          variant="outlined"
-          size="small"
-          aria-label="outlined button group"
-        >
-          {taskStatusData.map((item) => (
-            <Button
-              sx={
-                status === item.name
-                  ? styles.StatusButton
-                  : styles.unStatusButton
-              }
-              key={item.id}
-              onClick={() => handleChangeStatus(item.name)}
-            >
-              {item.name}
-            </Button>
-          ))}
-        </ButtonGroup> */}
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
         <ToggleButtonGroup
           size="small"
           color="primary"
           value={status}
           exclusive
           onChange={handleChangeStatus}
-          aria-label="Platform"
         >
           {taskStatusData.map((item) => (
             <ToggleButton key={item.id} value={item.name}>
@@ -336,12 +333,16 @@ function TaskPage(props) {
             </ToggleButton>
           ))}
         </ToggleButtonGroup>
-      </Box>
+        <Button
+          variant="outlined"
+          sx={{ fontSize: 10, ml: 1 }}
+          onClick={() => handleSort()}
+        >
+          <ScheduleIcon sx={{ mr: 0.5 }} />
+          {sord === "DESC" ? "▼" : "▲"}
+        </Button>
+        </Box>
 
-      <Button variant="outlined" size="small" onClick={() => handleSort()}>
-        <ScheduleIcon fontSize="small" />
-        {sord === "DESC" ? "▼" : "▲"}
-      </Button>
 
       {/* 新增Task表單 */}
       <FormModal
@@ -362,7 +363,7 @@ function TaskPage(props) {
           handleUpdateProjectStatus={handleUpdateProjectStatus}
         />
       ) : null}
-    </div>
+    </Container>
   );
 }
 

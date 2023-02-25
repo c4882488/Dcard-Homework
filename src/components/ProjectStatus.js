@@ -29,6 +29,7 @@ function ProjectStatus(props) {
           disableElevation
           onClick={handleClick}
           endIcon={<KeyboardArrowDownIcon />}
+          sx={{ mb: 1 }}
         >
           {name}
         </Button>
