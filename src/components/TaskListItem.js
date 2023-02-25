@@ -5,7 +5,7 @@ import ProjectStatus from "./ProjectStatus";
 
 function TaskList(props) {
     const {
-      node: { bodyText, url, title, id, projectCards },
+      node: { bodyText, title, id, projectCards },
       taskStatusData,
       handleDeleteTask,
       handleEditTask,

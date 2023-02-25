@@ -3,32 +3,52 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 import Typography from "@mui/material/Typography";
+import useInput from "./useInput";
 
 function TaskForm(props) {
   const { handleClose, handleAddTask, handleUpdateTask, editData } = props;
-  const [taskData, setTaskData] = useState({
-    title: editData.title || "",
-    bodyText: editData.bodyText || "",
-    id: editData.id || "",
-    projectId: editData.projectId || "",
-  });
+  const { 
+    value: title, 
+    error: titleError, 
+    errorText: titleErrorText, 
+    handleChange: handleChangeTitle
+  } = useInput(editData.title || "", "title", true);
+  const { 
+    value: bodyText, 
+    error: bodyTextError, 
+    errorText: bodyTextErrorText, 
+    handleChange: handleChangeBodyText 
+  } = useInput(editData.bodyText || "", "bodyText", true);
+  
+  // const [taskData, setTaskData] = useState({
+  //   id: editData.id || "",
+  //   projectId: editData.projectId || "",
+  // });
 
   // 輸入框改變時，更新 state
-  const handleChangeText = (e) => {
-    setTaskData((prevState)=>{
-      return {
-        ...prevState,
-        [e.target.id]: e.target.value,
-      }
-    });
-  }
+  // const handleChangeText = (e) => {
+  //   setTaskData((prevState)=>{
+  //     return {
+  //       ...prevState,
+  //       [e.target.id]: e.target.value,
+  //     }
+  //   });
+  // }
   // 表單送出
   const onSubmit = (e) => {
-    // TODO: 文字框缺少檢查判斷
     e.preventDefault();
-    if(taskData.id !== ""){
+    if(titleErrorText || bodyTextErrorText){
+      return;
+    }
+    let taskData = {
+        id: editData.id || "",
+        projectId: editData.projectId || "",
+        title:title, 
+        bodyText:bodyText
+      }
+    if (editData.id !== undefined) {
       handleUpdateTask(taskData);
-    }else{
+    } else {
       handleAddTask(taskData);
     }
   };
@@ -36,7 +56,7 @@ function TaskForm(props) {
   return (
     <div>
       <Typography id="modal-title" variant="h5" component="h2">
-        {taskData.id !== "" ? "Edit" : "Add"} Task
+        {editData.id !== undefined ? "Edit" : "Add"} Task
       </Typography>
       <Box
         component="form"
@@ -46,29 +66,32 @@ function TaskForm(props) {
         }}
       >
         <TextField
-          helperText="Please enter Task Title"
+          error={titleError}
+          helperText={titleErrorText !== null ? titleErrorText : ""}
           fullWidth
           id="title"
           label="Task Title"
-          value={taskData.title}
+          value={title}
           onChange={(e) => {
-            handleChangeText(e);
+            handleChangeTitle(e);
           }}
         />
         <TextField
+          error={bodyTextError}
+          helperText={bodyTextErrorText !== null ? bodyTextErrorText : ""}
           fullWidth
           id="bodyText"
           label="Body Text"
           multiline
           rows={4}
-          value={taskData.bodyText}
+          value={bodyText}
           onChange={(e) => {
-            handleChangeText(e);
+            handleChangeBodyText(e);
           }}
         />
 
         <Button variant="contained" onClick={(e) => onSubmit(e)}>
-          {taskData.id !== "" ? "修改" : "新增"}
+          {editData.id !== undefined ? "修改" : "新增"}
         </Button>
         <Button variant="outlined" onClick={() => handleClose()}>
           取消

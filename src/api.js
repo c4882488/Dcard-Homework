@@ -23,6 +23,6 @@ export const apiUserLogin = (data) =>
   userRequest.post("oauth/access_token", data);
 
 // GraphQL Api
-export const apiGraphql = async (data) =>
-  await githubRequest.post("graphql", data, { headers });
+export const apiGraphql = (data) =>
+  githubRequest.post("graphql", data, { headers });
 

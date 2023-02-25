@@ -2,7 +2,7 @@ import TaskListItem from "./TaskListItem";
 
 function TaskList(props) {
   const {
-    taskData: { nodes, pageInfo, totalCount },
+    taskData: { nodes },
     taskStatusData,
     handleDeleteTask,
     handleEditTask,

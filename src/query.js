@@ -36,8 +36,17 @@ export const getIssues = {
         totalCount
         }
     }
-}
+}@cacheControl(maxAge: 0)
 `,
+};
+export const getUserName = {
+    query: `
+        query {
+        viewer {
+            login
+        }
+    }
+    `,
 };
 // after: "Y3Vyc29yOjEw"
 export const queryIssues = `
