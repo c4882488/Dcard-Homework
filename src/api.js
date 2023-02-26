@@ -1,13 +1,11 @@
 import axios from "axios";
 
-const headers = {
-  Accept: "application/json",
-  Authorization: localStorage.getItem("authToken"),
-};
+const cors = "https://corsany.herokuapp.com/";
 
-// const cors = "https://cors-anywhere.herokuapp.com/";
-// const cors = "http://localhost:8080/";
-const cors = "";
+const headers = {
+  "Authorization":localStorage.getItem("authToken"),
+  "Content-Type": "application/json",
+};
 
 // User API
 const userRequest = axios.create({
@@ -16,15 +14,13 @@ const userRequest = axios.create({
 
 // github API
 const githubRequest = axios.create({
-  baseURL: cors+"https://api.github.com/",
-  headers
-});
+  baseURL: cors+"https://api.github.com/"});
 
 // Oauth authorization
 export const apiUserLogin = (data) =>
-  userRequest.post("oauth/access_token", data);
+  userRequest.post("oauth/access_token", data, { headers });
 
 // GraphQL Api
-export const apiGraphql = (data) =>
-  githubRequest.post("graphql", data);
+export const apiGraphql = (data, header) =>
+  githubRequest.post("graphql", data, { headers: header !== undefined?header:headers });
 

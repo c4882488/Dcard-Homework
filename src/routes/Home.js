@@ -12,18 +12,20 @@ function Home() {
   
   // 查詢登入狀態 
   const handleLogin = () => {
-    apiGraphql(getUserName)
+    apiGraphql(getUserName, {
+      Authorization: localStorage.getItem("authToken"),
+    })
       .then((response) => {
         localStorage.setItem("user", response.data.data.viewer.login);
         setLogin(true);
-      },{Headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` }})
+      })
       .catch((error) => {
         setLogin(false);
         let message =
           error.response !== undefined
             ? error.response.data.message
             : error.message;
-          handleSnackbar(message, "error");
+        handleSnackbar(message, "error");
       });
   };
   // snackbar
@@ -37,7 +39,8 @@ function Home() {
   }
 
   useEffect(() => {
-    console.log(localStorage.getItem("authToken"));
+    // setToken(localStorage.getItem("authToken"));
+    // console.log(localStorage.getItem("authToken"));
     if (localStorage.getItem("authToken") !== null ) {
       handleLogin();
     }

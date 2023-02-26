@@ -56,10 +56,15 @@ function TaskPage(props) {
         )}/DcardHomework-test ${keyword} sort:created-${sord} type:issue is:open`,
       };
     }
-    await apiGraphql({
-      query: queryIssues,
-      variables,
-    })
+    await apiGraphql(
+      {
+        query: queryIssues,
+        variables,
+      },
+      {
+        Authorization: localStorage.getItem("authToken"),
+      }
+    )
       .then((response) => {
         // console.log(response.data.data);
         // 判斷是否有下一頁
@@ -70,10 +75,7 @@ function TaskPage(props) {
             setTaskData((per) => {
               return {
                 ...per,
-                nodes: [
-                  ...per.nodes,
-                  ...data.nodes,
-                ].filter((node) => {
+                nodes: [...per.nodes, ...data.nodes].filter((node) => {
                   return node.projectCards.nodes[0].column.name === status;
                 }),
                 pageInfo: data.pageInfo,
@@ -110,16 +112,24 @@ function TaskPage(props) {
         }
       })
       .catch((error) => {
-        let message = error.response !== undefined ? error.response.data.message : error.message;
+        let message =
+          error.response !== undefined
+            ? error.response.data.message
+            : error.message;
         handleSnackbar(message, "error");
       });
   };
   // 取得 Project Status
   const getProjectStatus = () => {
-    apiGraphql({
-      query: getProjectColumn,
-      variables: { name: "DcardHomework-project" },
-    })
+    apiGraphql(
+      {
+        query: getProjectColumn,
+        variables: { name: "DcardHomework-project" },
+      },
+      {
+        Authorization: localStorage.getItem("authToken"),
+      }
+    )
       .then((response) => {
         let projectStatus =
           response.data.data.viewer.projects.nodes[0].columns.nodes;
@@ -141,10 +151,15 @@ function TaskPage(props) {
   };
   // 取得 Repository Id
   const getRepositoryId = () => {
-    apiGraphql({
-      query: getRepository,
-      variables: { name: "DcardHomework-test" },
-    })
+    apiGraphql(
+      {
+        query: getRepository,
+        variables: { name: "DcardHomework-test" },
+      },
+      {
+        Authorization: localStorage.getItem("authToken"),
+      }
+    )
       .then((response) => {
         setRepositoryId(response.data.data.viewer.repository.id);
       })
@@ -179,14 +194,19 @@ function TaskPage(props) {
         projectIds: [projectId],
       },
     };
-    await apiGraphql({
-      query: createIssues,
-      variables,
-    })
+    await apiGraphql(
+      {
+        query: createIssues,
+        variables,
+      },
+      {
+        Authorization: localStorage.getItem("authToken"),
+      }
+    )
       .then((response) => {
         let projectCardId =
           response.data.data.createIssue.issue.projectCards.nodes[0].id;
-        handleUpdateProjectStatus(projectCardId, taskStatusData[0].id,"add");
+        handleUpdateProjectStatus(projectCardId, taskStatusData[0].id, "add");
       })
       .catch((error) => {
         handleSnackbar(error.message, "error");
@@ -201,10 +221,15 @@ function TaskPage(props) {
       body: data.bodyText,
       projectIds: [data.projectId],
     };
-    apiGraphql({
-      query: updateIssues,
-      variables,
-    })
+    apiGraphql(
+      {
+        query: updateIssues,
+        variables,
+      },
+      {
+        Authorization: localStorage.getItem("authToken"),
+      }
+    )
       .then((response) => {
         handleCloseModal();
         pageReset({
@@ -218,18 +243,26 @@ function TaskPage(props) {
   };
   // DELETE Task
   const handleDeleteTask = async (id) => {
-    await apiGraphql({
-      query: deleteIssues,
-      variables: { issueId: id },
-    })
+    await apiGraphql(
+      {
+        query: deleteIssues,
+        variables: { issueId: id },
+      },
+      {
+        Authorization: localStorage.getItem("authToken"),
+      }
+    )
       .then((response) => {
         pageReset({
           message: "Delete Task success",
           type: "success",
         });
       })
-      .catch((error) => {      
-        let message = error.response !== undefined ? error.response.data.message : error.message;
+      .catch((error) => {
+        let message =
+          error.response !== undefined
+            ? error.response.data.message
+            : error.message;
         handleSnackbar(message, "error");
       });
   };
@@ -241,15 +274,20 @@ function TaskPage(props) {
         columnId: columnId,
       },
     };
-    apiGraphql({
-      query: updateProjectStatus,
-      variables,
-    })
+    apiGraphql(
+      {
+        query: updateProjectStatus,
+        variables,
+      },
+      {
+        Authorization: localStorage.getItem("authToken"),
+      }
+    )
       .then((response) => {
-        if(state === "add"){
+        if (state === "add") {
           handleCloseModal();
-          pageReset({ message: "Add Task success", type: "success"});
-        }else{
+          pageReset({ message: "Add Task success", type: "success" });
+        } else {
           pageReset({
             message: "Update Project Status success",
             type: "success",
@@ -257,7 +295,10 @@ function TaskPage(props) {
         }
       })
       .catch((error) => {
-        let message = error.response !== undefined ? error.response.data.message : error.message;
+        let message =
+          error.response !== undefined
+            ? error.response.data.message
+            : error.message;
         handleSnackbar(message, "error");
       });
   };

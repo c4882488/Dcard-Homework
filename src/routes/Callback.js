@@ -8,6 +8,7 @@ import {
   createProject,
   createProjectColumn,
 } from "../query";
+import axios from 'axios';
 
 function Callback() {
   const navigate = useNavigate();
@@ -24,6 +25,9 @@ function Callback() {
       {
         query: getRepository,
         variables: { name: "DcardHomework-test" },
+      },
+      {
+        'Authorization': token
       }
     )
       .then((response) => {
@@ -53,14 +57,19 @@ function Callback() {
   };
   // TODO: 創建project columns or select project
   const createNewProject = async () => {
-    await apiGraphql({
-      query: createProject,
-      variables: {
-        name: "DcardHomework-project",
-        repositoryId: [repositoryId],
-        ownerId: "MDQ6VXNlcjMzMzg5MzQw",
+    await apiGraphql(
+      {
+        query: createProject,
+        variables: {
+          name: "DcardHomework-project",
+          repositoryId: [repositoryId],
+          ownerId: "MDQ6VXNlcjMzMzg5MzQw",
+        },
       },
-    })
+      {
+        Authorization: token,
+      }
+    )
       .then((response) => {
         setProjectId(response.data.data.createProject.project.id);
         // console.log(response.data.data.createProject.project.id);
@@ -73,13 +82,18 @@ function Callback() {
   const createNewProjectColumn = async () => {
     const columnTitles = ["Open", "In Progress", "Done"];
     const promises = columnTitles.map((title) => {
-      return apiGraphql({
-        query: createProjectColumn,
-        variables: {
-          projectId: projectId,
-          name: title,
+      return apiGraphql(
+        {
+          query: createProjectColumn,
+          variables: {
+            projectId: projectId,
+            name: title,
+          },
         },
-      });
+        {
+          Authorization: token,
+        }
+      );
     });
     await Promise.all(promises)
       .then((results) => {
@@ -95,10 +109,6 @@ function Callback() {
         client_id: process.env.REACT_APP_CLIENT_ID,
         client_secret: process.env.REACT_APP_CLIENT_SECRETS,
         code: authCode,
-      },
-      {
-        Accept: "application/json",
-        Authorization: token,
       }
     )
       .then((response) => {
@@ -128,7 +138,7 @@ function Callback() {
         // console.log(localStorage.getItem("authToken"));
         checkRepository();
       }
-    }, 2000);
+    }, 800);
 
     return () => {
       clearTimeout(timerId);
