@@ -8,10 +8,11 @@ import Button from "@mui/material/Button";
 function HomeAppBar(props) {
   const { login, handleLogout } = props;
   // Oauth2.0 url
+  // ,write:discussion,read:discussion
   let authorizedWebsite =
     "https://github.com/login/oauth/authorize?client_id=" +
     process.env.REACT_APP_CLIENT_ID +
-    ";read:user,scope=repo,project,write:discussion,read:discussion";
+    ";scope=user:email,read:user,repo,project";
 
   return (
     <Box>

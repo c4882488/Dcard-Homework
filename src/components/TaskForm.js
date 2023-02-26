@@ -19,20 +19,6 @@ function TaskForm(props) {
     handleChange: handleChangeBodyText 
   } = useInput(editData.bodyText || "", "bodyText", true);
   
-  // const [taskData, setTaskData] = useState({
-  //   id: editData.id || "",
-  //   projectId: editData.projectId || "",
-  // });
-
-  // 輸入框改變時，更新 state
-  // const handleChangeText = (e) => {
-  //   setTaskData((prevState)=>{
-  //     return {
-  //       ...prevState,
-  //       [e.target.id]: e.target.value,
-  //     }
-  //   });
-  // }
   // 表單送出
   const onSubmit = (e) => {
     e.preventDefault();

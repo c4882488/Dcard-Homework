@@ -16,7 +16,7 @@ function Home() {
       .then((response) => {
         localStorage.setItem("user", response.data.data.viewer.login);
         setLogin(true);
-      })
+      },{Headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` }})
       .catch((error) => {
         setLogin(false);
         let message =
@@ -37,6 +37,7 @@ function Home() {
   }
 
   useEffect(() => {
+    console.log(localStorage.getItem("authToken"));
     if (localStorage.getItem("authToken") !== null ) {
       handleLogin();
     }

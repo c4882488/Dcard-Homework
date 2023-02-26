@@ -48,7 +48,7 @@ export const getUserName = {
     }
     `,
 };
-// after: "Y3Vyc29yOjEw"
+
 export const queryIssues = `
     query ($query: String!, $after: String) {
     search(type: ISSUE, first: 10, query: $query, after: $after) {
@@ -94,6 +94,11 @@ export const createIssues = `
                 id
                 title
                 bodyText
+                projectCards(last: 1) {
+                nodes {
+                    id
+                    }
+                }
             }
         }
     }
@@ -123,11 +128,10 @@ export const deleteIssues = `
     }
 `;
 
-export const getProjectColumn = {
-  query: `
-    {
+export const getProjectColumn = `
+    query ($name: String!) {
     viewer {
-        projects(states: OPEN, last: 1, search: "Dcard Homework Project") {
+        projects(states: OPEN, last: 1, search: $name) {
         nodes {
             columns(last: 10) {
             nodes {
@@ -141,8 +145,7 @@ export const getProjectColumn = {
         }
     }
     }
-  `,
-};
+  `;
 
 export const updateProjectStatus = `
     mutation($input: MoveProjectCardInput!) {
@@ -161,5 +164,65 @@ export const updateProjectStatus = `
             }
             }
         }
+    }
+`;
+
+export const getRepository = `
+    query ($name: String!){
+    viewer {
+        repository(name: $name) {
+        id
+        }
+    }
+}
+`;
+
+export const createRepository = `
+    mutation($name: String!) {
+    createRepository(input: {name: $name, description: "create DcardHomework issues", visibility: PRIVATE}) {
+        repository {
+        id
+        name
+        }
+    }
+    }
+`;
+
+export const createProject = `
+    mutation($name: String!, $ownerId: ID! , $repositoryId: [ID!]) {
+    createProject(input: {name: $name, body: "A project", ownerId: $ownerId, repositoryIds: $repositoryId}) {
+        project {
+        id
+        name
+        }
+    }
+    }
+`;
+
+export const createProjectColumn = `
+    mutation($projectId: ID!, $name: String!) {
+    addProjectColumn(input: {name: $name, projectId: $projectId}) {
+        columnEdge {
+        node {
+            id
+        }
+        }
+    }
+    }
+`;
+
+export const createProjectCard = `
+    mutation( $contentId: ID, $columnId : ID! ) {
+    addProjectCard(input: {
+        contentId: $contentId,
+        projectColumnId: $columnId,
+    }) {
+        cardEdge {
+        node {
+            id
+            note
+        }
+        }
+    }
     }
 `;

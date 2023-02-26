@@ -11,6 +11,8 @@ import {
   getProjectColumn,
   updateProjectStatus,
   queryIssues,
+  getRepository,
+  createProjectCard,
 } from "../query";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import Fab from "@mui/material/Fab";
@@ -35,17 +37,23 @@ function TaskPage(props) {
   const [keyword, setKeyword] = useState("");
   // TODO: 編輯用
   const [editData, setEditData] = useState({});
+  const [projectId, setProjectId] = useState(null);
+  const [repositoryId, setRepositoryId] = useState(null);
 
   const getIssues = async (endCursor) => {
     let variables;
     if (endCursor !== undefined) {
       variables = {
-        query: `repo:${localStorage.getItem("user")}/Vemorize-web ${keyword} sort:created-${sord} type:issue is:open`,
+        query: `repo:${localStorage.getItem(
+          "user"
+        )}/DcardHomework-test ${keyword} sort:created-${sord} type:issue is:open`,
         after: endCursor,
       };
     } else {
       variables = {
-        query: `repo:${localStorage.getItem("user")}/Vemorize-web ${keyword} sort:created-${sord} type:issue is:open`,
+        query: `repo:${localStorage.getItem(
+          "user"
+        )}/DcardHomework-test ${keyword} sort:created-${sord} type:issue is:open`,
       };
     }
     await apiGraphql({
@@ -108,17 +116,46 @@ function TaskPage(props) {
   };
   // 取得 Project Status
   const getProjectStatus = () => {
-    apiGraphql(getProjectColumn)
+    apiGraphql({
+      query: getProjectColumn,
+      variables: { name: "DcardHomework-project" },
+    })
       .then((response) => {
+        let projectStatus =
+          response.data.data.viewer.projects.nodes[0].columns.nodes;
+        // 排序
         setStatusTaskData(
-          response.data.data.viewer.projects.nodes[0].columns.nodes
+          projectStatus.sort(function (a, b) {
+            return a.name > b.name ? -1 : 1;
+          })
         );
+        setProjectId(response.data.data.viewer.projects.nodes[0].id);
       })
       .catch((error) => {
-        let message = error.response !== undefined ? error.response.data.message : error.message;
+        let message =
+          error.response !== undefined
+            ? error.response.data.message
+            : error.message;
         handleSnackbar(message, "error");
       });
   };
+  // 取得 Repository Id
+  const getRepositoryId = () => {
+    apiGraphql({
+      query: getRepository,
+      variables: { name: "DcardHomework-test" },
+    })
+      .then((response) => {
+        setRepositoryId(response.data.data.viewer.repository.id);
+      })
+      .catch((error) => {
+        let message =
+          error.response !== undefined
+            ? error.response.data.message
+            : error.message;
+        handleSnackbar(message, "error");
+      });
+  }
 
   // 控制modal開關
   const handleOpenModal = () => setOpenModal(true);
@@ -138,8 +175,8 @@ function TaskPage(props) {
       input: {
         title: data.title,
         body: data.bodyText,
-        repositoryId: "R_kgDOI5-7Rg",
-        projectIds: ["PRO_kwHOAf17HM4A3-p-"],
+        repositoryId: repositoryId,
+        projectIds: [projectId],
       },
     };
     await apiGraphql({
@@ -147,16 +184,15 @@ function TaskPage(props) {
       variables,
     })
       .then((response) => {
-        handleCloseModal();
-        pageReset({
-          message: "Add Task success",
-          type: "success",
-        });
+        let projectCardId =
+          response.data.data.createIssue.issue.projectCards.nodes[0].id;
+        handleUpdateProjectStatus(projectCardId, taskStatusData[0].id,"add");
       })
       .catch((error) => {
         handleSnackbar(error.message, "error");
       });
   };
+
   // UPDATE Task
   const handleUpdateTask = (data) => {
     let variables = {
@@ -198,7 +234,7 @@ function TaskPage(props) {
       });
   };
   // UPDATE Project status
-  const handleUpdateProjectStatus = (cardId, columnId) => {
+  const handleUpdateProjectStatus = (cardId, columnId, state) => {
     let variables = {
       input: {
         cardId: cardId,
@@ -210,7 +246,15 @@ function TaskPage(props) {
       variables,
     })
       .then((response) => {
-        pageReset({ message: "Update Project Status success", type: "success"});
+        if(state === "add"){
+          handleCloseModal();
+          pageReset({ message: "Add Task success", type: "success"});
+        }else{
+          pageReset({
+            message: "Update Project Status success",
+            type: "success",
+          });
+        }
       })
       .catch((error) => {
         let message = error.response !== undefined ? error.response.data.message : error.message;
@@ -250,6 +294,7 @@ function TaskPage(props) {
   useEffect(() => {
     getIssues();
     getProjectStatus();
+    getRepositoryId();
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);

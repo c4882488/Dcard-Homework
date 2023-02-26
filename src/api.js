@@ -16,6 +16,7 @@ const userRequest = axios.create({
 // github API
 const githubRequest = axios.create({
   baseURL: cors+"https://api.github.com/",
+  headers
 });
 
 // Oauth authorization
@@ -24,5 +25,5 @@ export const apiUserLogin = (data) =>
 
 // GraphQL Api
 export const apiGraphql = (data) =>
-  githubRequest.post("graphql", data, { headers });
+  githubRequest.post("graphql", data);
 
