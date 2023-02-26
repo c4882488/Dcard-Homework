@@ -6,7 +6,8 @@ const headers = {
 };
 
 // const cors = "https://cors-anywhere.herokuapp.com/";
-const cors = "http://localhost:8080/";
+// const cors = "http://localhost:8080/";
+const cors = "";
 
 // User API
 const userRequest = axios.create({
