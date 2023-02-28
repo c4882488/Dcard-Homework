@@ -15,9 +15,15 @@ REACT_APP_CLIENT_SECRETS=xxx
 npm install && npm run start
 ```
 
+---
+
+
+
 ### Demo
 
 [heroku](https://dcardhomework.herokuapp.com/)
+
+---
 
 
 
@@ -80,6 +86,8 @@ src/
   - `api.js` 為呼叫 Github api function
   
   - `query.js` 為呼叫 Github Graphql api
+
+---
 
 
 
