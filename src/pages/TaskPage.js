@@ -1,6 +1,6 @@
 import React,{ useEffect } from 'react'
 import { Button } from "@mui/material";
-import { apiGraphql } from "../api";
+import { apiGraphql } from "../utils/api";
 import TaskList from "../components/TaskList";
 import { useState } from "react";
 import FormModal from "../components/FormModal";
@@ -13,7 +13,7 @@ import {
   queryIssues,
   getRepository,
   createProjectCard,
-} from "../query";
+} from "../utils/query";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import Fab from "@mui/material/Fab";
 import { Box, Container } from "@mui/system";

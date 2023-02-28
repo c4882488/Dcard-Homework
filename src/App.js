@@ -1,6 +1,6 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import Home from './routes/Home';
-import Callback from './routes/Callback';
+import Home from './pages/Home';
+import Callback from './pages/Callback';
 import { SnackbarProvider } from "notistack";
 
 const router = createBrowserRouter([

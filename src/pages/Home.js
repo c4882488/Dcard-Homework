@@ -1,8 +1,8 @@
 import React,{ useEffect, useState } from 'react'
 import { useSnackbar } from "notistack";
 import TaskPage from "./TaskPage";
-import { apiGraphql } from "../api";
-import { getUserName } from "../query";
+import { apiGraphql } from "../utils/api";
+import { getUserName } from "../utils/query";
 import HomeAppBar from "../components/HomeAppBar";
 import { Box } from '@mui/system';
 
@@ -39,8 +39,6 @@ function Home() {
   }
 
   useEffect(() => {
-    // setToken(localStorage.getItem("authToken"));
-    // console.log(localStorage.getItem("authToken"));
     if (localStorage.getItem("authToken") !== null ) {
       handleLogin();
     }

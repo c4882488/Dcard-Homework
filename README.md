@@ -1,70 +1,90 @@
-# Getting Started with Create React App
+## Dcard Homework 2023
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### 執行專案
 
-## Available Scripts
+設定.evn檔案
 
-In the project directory, you can run:
+```
+REACT_APP_CLIENT_ID=xxx
+REACT_APP_CLIENT_SECRETS=xxx
+```
 
-### `npm start`
+執行專案
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```
+npm install && npm run start
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Demo
 
-### `npm test`
+[heroku](https://dcardhomework.herokuapp.com/)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 專案架構
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```
+src/
+├── components/
+│   ├── HomeAppBar.js
+│   ├── ProjectStatus.js
+│   ├── ProjectStatusItem.js
+│   ├── FormModal.js
+│   ├── TaskForm.js
+│   ├── TaskList.js
+│   ├── TaskListItem.js
+│   └── useInput.js
+├── pages/
+│   ├── Callback.js
+│   ├── HomePage.js
+│   └── TaskPage.js
+├── utils/
+│   ├── query.js
+│   └── api.js
+├── App.js
+└── index.js
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- `App.js` 是 React App 的進入點，配置路由和其他全局配置。
 
-### `npm run eject`
+- `index.js` 是 React App 的渲染點，負責將 App 渲染至指定 DOM 上。
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- `components/` 存放所有共用的 React component。
+  
+  - `HomeAppBar.js` 為 NavBar
+  
+  - `ProjectStatus.js` 為 Task 狀態下拉選單
+  
+  - `ProjectStatusItem.js` 為 Task 狀態下拉選單選項
+  
+  - `FormModal.js` 為彈出視窗模組
+  
+  - `TaskForm.js` 為 Task 新增/修改表單
+  
+  - `TaskList.js` 為 Task 列表
+  
+  - `TaskListItem.js` 為 Task 資料顯示
+  
+  - `useInput.js` 為 Task 表單驗證
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- `pages/` 存放所有頁面 component，比如 HomePage.js、TaskPage.js 等。
+  
+  - `Callback.js` 為 Github Oath 導向頁面
+  
+  - `HomePage.js` 為首頁
+  
+  - `TaskPage.js` 為 Task 頁面
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- `utils/` 存放所有與 API 互動的 function，比如 api.js 等。
+  
+  - `api.js` 為呼叫 Github api function
+  
+  - `query.js` 為呼叫 Github Graphql api
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 改進
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- [ ] `query.js` 可以改成用apollo-server、graphql來寫
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- [ ] 共用變數可以改成redux

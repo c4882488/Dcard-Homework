@@ -1,14 +1,13 @@
 import qs from 'qs'
 import { useLocation, useNavigate } from "react-router-dom";
-import { apiUserLogin, apiGraphql } from "../api";
+import { apiUserLogin, apiGraphql } from "../utils/api";
 import { useEffect, useState } from "react";
 import {
   getRepository,
   createRepository,
   createProject,
   createProjectColumn,
-} from "../query";
-import axios from 'axios';
+} from "../utils/query";
 
 function Callback() {
   const navigate = useNavigate();
