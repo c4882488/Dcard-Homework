@@ -44,6 +44,7 @@ export const getUserName = {
         query {
         viewer {
             login
+            id
         }
     }
     `,

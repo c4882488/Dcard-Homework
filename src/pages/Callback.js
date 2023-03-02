@@ -7,6 +7,7 @@ import {
   createRepository,
   createProject,
   createProjectColumn,
+  getUserName,
 } from "../utils/query";
 
 function Callback() {
@@ -14,10 +15,25 @@ function Callback() {
   const [repositoryId, setRepositoryId] = useState(null);
   const [projectId, setProjectId] = useState(null);
   const [token, setToken] = useState(null);
+  const [ownerId, setOwnerId] = useState(null);
 
   let authCode = qs.parse(useLocation().search, {
     ignoreQueryPrefix: true,
   }).code;
+
+  // 查詢登入狀態
+  const checkLoginId = () => {
+    apiGraphql(getUserName, {
+      Authorization: localStorage.getItem("authToken"),
+    })
+      .then((response) => {
+        setOwnerId(response.data.data.viewer.id);
+      })
+      .catch((error) => {
+        console.log(error);
+        navigate("/");
+      });
+  };
 
   const checkRepository = async () => {
     await apiGraphql(
@@ -26,7 +42,7 @@ function Callback() {
         variables: { name: "DcardHomework-test" },
       },
       {
-        'Authorization': token
+        Authorization: token,
       }
     )
       .then((response) => {
@@ -41,8 +57,9 @@ function Callback() {
         navigate("/");
       });
   };
+
   // TODO: create a Repository or select Repository
-  const createNewRepository =async () => {
+  const createNewRepository = async () => {
     await apiGraphql(
       {
         query: createRepository,
@@ -67,7 +84,7 @@ function Callback() {
         variables: {
           name: "DcardHomework-project",
           repositoryId: [repositoryId],
-          ownerId: "MDQ6VXNlcjMzMzg5MzQw",
+          ownerId: ownerId,
         },
       },
       {
@@ -108,13 +125,11 @@ function Callback() {
       });
   };
   const userLogin = async () => {
-    await apiUserLogin(
-      {
-        client_id: process.env.REACT_APP_CLIENT_ID,
-        client_secret: process.env.REACT_APP_CLIENT_SECRETS,
-        code: authCode,
-      }
-    )
+    await apiUserLogin({
+      client_id: process.env.REACT_APP_CLIENT_ID,
+      client_secret: process.env.REACT_APP_CLIENT_SECRETS,
+      code: authCode,
+    })
       .then((response) => {
         let data = qs.parse(response.data);
         if (data.access_token !== undefined) {
@@ -129,30 +144,38 @@ function Callback() {
         console.log(error);
         navigate("/");
       });
-  }
+  };
 
   useEffect(() => {
     userLogin();
   }, []);
 
   useEffect(() => {
-    console.log("token", token);
+    // console.log("token", token);
     const timerId = setTimeout(() => {
       if (token !== null) {
         // console.log(localStorage.getItem("authToken"));
-        checkRepository();
+        checkLoginId();
       }
     }, 800);
 
     return () => {
       clearTimeout(timerId);
     };
-  },[token]);
+  }, [token]);
+
+  useEffect(() => {
+    if (ownerId !== null) {
+      checkRepository();
+    }
+  }, [ownerId]);
+
   useEffect(() => {
     if (repositoryId !== null) {
       createNewProject();
     }
   }, [repositoryId]);
+
   useEffect(() => {
     if (projectId !== null) {
       createNewProjectColumn();
