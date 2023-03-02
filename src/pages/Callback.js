@@ -43,10 +43,15 @@ function Callback() {
   };
   // TODO: create a Repository or select Repository
   const createNewRepository =async () => {
-    await apiGraphql({
-      query: createRepository,
-      variables: { name: "DcardHomework-test" },
-    },{headers: { 'Content-Type': 'application/json', 'Authorization': token }})
+    await apiGraphql(
+      {
+        query: createRepository,
+        variables: { name: "DcardHomework-test" },
+      },
+      {
+        Authorization: token,
+      }
+    )
       .then((response) => {
         setRepositoryId(response.data.data.createRepository.repository.id);
       })
@@ -115,7 +120,7 @@ function Callback() {
         if (data.access_token !== undefined) {
           let getToken = "bearer " + data.access_token;
           localStorage.setItem("authToken", getToken);
-          setToken(getToken);
+          setToken("Bearer " + getToken);
         }
         // navigate("/");
       })
