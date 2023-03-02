@@ -118,9 +118,9 @@ function Callback() {
       .then((response) => {
         let data = qs.parse(response.data);
         if (data.access_token !== undefined) {
-          let getToken = "bearer " + data.access_token;
+          let getToken = "Bearer " + data.access_token;
           localStorage.setItem("authToken", getToken);
-          setToken("Bearer " + getToken);
+          setToken(getToken);
         }
         // navigate("/");
       })
